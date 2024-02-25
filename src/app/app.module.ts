@@ -20,7 +20,8 @@ import {HttpClientModule} from "@angular/common/http";
     AppComponent
   ],
   providers: [
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    ModalComponent
   ]
 })
 export class AppModule {
