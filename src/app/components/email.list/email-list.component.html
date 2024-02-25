@@ -9,13 +9,19 @@
     </button>
   </div>
 
+  <mat-form-field>
+    <mat-label>Filter</mat-label>
+    <input #input (keyup)="applyFilter($event)" matInput
+           placeholder="Ex.: Fulano de tal, Enviado, Notas de Matemática, 04/12/2023">
+  </mat-form-field>
+
   <div class="mat-elevation-z8 ">
 
     <table class="mat-elevation-z4" mat-table [dataSource]="dataSource">
       <caption>E-mails carregados através da planilha</caption>
 
       <ng-container matColumnDef="id">
-        <th *matHeaderCellDef mat-header-cell > ID</th>
+        <th *matHeaderCellDef mat-header-cell> ID</th>
         <td *matCellDef="let element" mat-cell> {{ element.id }}</td>
       </ng-container>
 

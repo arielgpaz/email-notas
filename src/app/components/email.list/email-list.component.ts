@@ -5,6 +5,8 @@ import {MatPaginator, MatPaginatorModule} from "@angular/material/paginator";
 import {MatButton} from "@angular/material/button";
 import {RouterLink} from "@angular/router";
 import {EmailService} from "../../services/email.service";
+import {MatFormField, MatLabel} from "@angular/material/form-field";
+import {MatInput} from "@angular/material/input";
 
 @Component({
   selector: 'app-email.list',
@@ -15,6 +17,9 @@ import {EmailService} from "../../services/email.service";
     MatPaginatorModule,
     MatButton,
     RouterLink,
+    MatFormField,
+    MatInput,
+    MatLabel
   ],
   styleUrl: './email-list.component.css'
 })
@@ -28,6 +33,10 @@ export class EmailListComponent implements OnInit, AfterViewInit {
   constructor(private service: EmailService) {
   }
 
+  ngOnInit() {
+    this.getEmails();
+  }
+
   getEmails(): void {
     this.service.getEmails().subscribe(res => {
       this.ELEMENT_DATA = res;
@@ -36,8 +45,9 @@ export class EmailListComponent implements OnInit, AfterViewInit {
     })
   }
 
-  ngOnInit() {
-    this.getEmails();
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   @ViewChild(MatPaginator)
