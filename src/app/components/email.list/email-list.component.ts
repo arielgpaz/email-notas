@@ -50,11 +50,18 @@ export class EmailListComponent implements OnInit, AfterViewInit {
 
   ELEMENT_DATA: EmailEnviado[] = []
 
-  displayedColumns: string[] = ['id', 'sendTo', 'status', 'subject', 'text', 'sendDate'];
+  displayedColumns: string[] = ['id', 'sendTo', 'status', 'subject', 'sendDate', 'conteudo'];
   dataSource = new MatTableDataSource<EmailEnviado>(this.ELEMENT_DATA);
   email: EmailEnviado | undefined;
+  fileName = '';
+  emailSubject = 'Subject';
+  additionalMessage = 'Message';
 
-  constructor(private service: EmailService) {
+  constructor(
+    private service: EmailService,
+    private toastr: ToastrService,
+    private modalComponent: ModalComponent
+  ) {
   }
 
   ngOnInit() {
@@ -79,6 +86,32 @@ export class EmailListComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
+  }
+
+  onFileSelected(event: any) {
+
+    const file: File = event.target.files[0];
+
+    if (file) {
+
+      this.fileName = file.name;
+
+      this.service.uploadEmailsFile(file, this.emailSubject, this.additionalMessage)
+        .subscribe({
+          next: statusCounter => {
+            if (statusCounter.error === 0) {
+              this.toastr.info('Todos os e-mails foram enviados com sucesso!', 'Sucesso');
+            } else if (statusCounter.error > 0 && statusCounter.sent > 0) {
+              this.toastr.warning('Alguns e-mails não foram enviados!', 'Atenção');
+            } else {
+              this.toastr.error('Nenhum e-mail foi enviado', 'Erro');
+            }
+          },
+          error: () => {
+            this.toastr.error('Não foi possível carregar o arquivo desejado!', 'Erro')
+          }
+        })
+    }
   }
 
 }

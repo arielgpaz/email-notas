@@ -1,16 +1,26 @@
 <div class="container">
 
-  <h1 class="mat-elevation-z8">Lista de e-mails enviados</h1>
+  <h1 class="mat-elevation-z8 pageTitle">Lista de e-mails enviados</h1>
 
   <div class="file-buttons">
-    <button class="mat-elevation-z8" color="primary" mat-stroked-button routerLink="">Carregar planilha de e-mails
+    <button
+      class="mat-elevation-z8 upBtn"
+      color="primary"
+      mat-stroked-button
+      (click)="uploadFile.toggle()">
+      Carregar planilha de e-mails
     </button>
-    <button class="mat-elevation-z8" color="primary" mat-stroked-button routerLink="">Baixar planilha de e-mails
+    <button
+      class="mat-elevation-z8 dwnBtn"
+      color="primary"
+      mat-stroked-button
+      (click)="downloadFile.toggle()">
+      Baixar planilha de e-mails
     </button>
   </div>
 
-  <mat-form-field>
-    <mat-label>Filter</mat-label>
+  <mat-form-field class="filter">
+    <mat-label>Filtrar</mat-label>
     <input #input (keyup)="applyFilter($event)" matInput
            placeholder="Ex.: Fulano de tal, Enviado, Notas de Matemática, 04/12/2023">
   </mat-form-field>
@@ -40,14 +50,19 @@
         <td *matCellDef="let element" mat-cell> {{ element.subject }}</td>
       </ng-container>
 
-      <ng-container matColumnDef="text">
-        <th *matHeaderCellDef mat-header-cell> Conteúdo</th>
-        <td *matCellDef="let element" mat-cell> {{ element.text }}</td>
-      </ng-container>
-
       <ng-container matColumnDef="sendDate">
         <th *matHeaderCellDef mat-header-cell> Data de envio</th>
         <td *matCellDef="let element" mat-cell> {{ element.sendDate }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="conteudo">
+        <th *matHeaderCellDef mat-header-cell> Conteúdo</th>
+        <td *matCellDef="let element" mat-cell>
+          <button mat-icon-button color="accent" aria-label="Abrir e-mail"
+                  (click)="showEmailModal.toggle(); setEmail(element)">
+            <mat-icon>open_in_new</mat-icon>
+          </button>
+        </td>
       </ng-container>
 
       <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
@@ -75,4 +90,29 @@
       <p>{{ email?.text }}</p>
     </mat-card-content>
   </mat-card>
+</modal>
+
+<modal #uploadFile>
+
+  <input
+    type="file"
+    class="file-input"
+    (change)="onFileSelected($event)"
+    #fileUpload
+    [hidden]="true">
+
+  <div class="file-upload">
+    <button
+      mat-mini-fab
+      color="primary"
+      (click)="fileUpload.click()">
+      <mat-icon>attach_file</mat-icon>
+    </button>
+    {{ fileName || "Nenhum arquivo escolhido" }}
+  </div>
+
+</modal>
+
+<modal #downloadFile>
+  <p>Download Modal</p>
 </modal>
