@@ -25,6 +25,10 @@ table {
   border-radius: 10px;
 }
 
+th.mat-sort-header-sorted {
+  color: black;
+}
+
 caption {
   margin-top: 1rem;
   margin-bottom: 1rem;

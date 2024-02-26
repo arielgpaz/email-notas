@@ -16,14 +16,18 @@ import {MatDivider} from "@angular/material/divider";
 import {ToastrService} from "ngx-toastr";
 import {FormControl, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {saveAs} from 'file-saver';
+import {MatSort, MatSortModule} from "@angular/material/sort";
+import {LiveAnnouncer} from "@angular/cdk/a11y";
 
 @Component({
   selector: 'app-email.list',
   templateUrl: './email-list.component.html',
+  styleUrl: './email-list.component.css',
   standalone: true,
   imports: [
     MatTableModule,
     MatPaginatorModule,
+    MatSortModule,
     MatButton,
     RouterLink,
     MatFormField,
@@ -43,21 +47,18 @@ import {saveAs} from 'file-saver';
     MatDivider,
     FormsModule,
     ReactiveFormsModule,
-  ],
-  styleUrl: './email-list.component.css'
+  ]
 })
 export class EmailListComponent implements OnInit, AfterViewInit {
-
-  setEmail(value: EmailEnviado) {
-    this.email = value;
-  }
 
   ELEMENT_DATA: EmailEnviado[] = []
 
   displayedColumns: string[] = ['id', 'sendTo', 'status', 'subject', 'sendDate', 'conteudo'];
+
   dataSource = new MatTableDataSource<EmailEnviado>();
   email: EmailEnviado | undefined;
   fileName = '';
+  showProgressBar: boolean = false;
 
   subject: FormControl = new FormControl(null, [Validators.required]);
   message: FormControl = new FormControl(null, [Validators.required]);
@@ -65,7 +66,6 @@ export class EmailListComponent implements OnInit, AfterViewInit {
   constructor(
     private service: EmailService,
     private toastr: ToastrService,
-    private modalComponent: ModalComponent
   ) {
   }
 
@@ -78,7 +78,19 @@ export class EmailListComponent implements OnInit, AfterViewInit {
       this.ELEMENT_DATA = res;
       this.dataSource = new MatTableDataSource<EmailEnviado, MatPaginator>(res);
       this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
     })
+  }
+
+  @ViewChild(MatPaginator)
+  paginator!: MatPaginator;
+
+  @ViewChild(MatSort)
+  sort!: MatSort;
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   applyFilter(event: KeyboardEvent) {
@@ -86,21 +98,16 @@ export class EmailListComponent implements OnInit, AfterViewInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  @ViewChild(MatPaginator)
-  paginator!: MatPaginator;
-
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
+  setEmail(value: EmailEnviado) {
+    this.email = value;
   }
 
   onFileSelected(event: any) {
-
     const file: File = event.target.files[0];
+    this.showProgressBar = true;
 
     if (file) {
-
       this.fileName = file.name;
-
       this.service.uploadEmailsFile(file, this.subject.value, this.message.value)
         .subscribe({
           next: statusCounter => {
@@ -114,7 +121,8 @@ export class EmailListComponent implements OnInit, AfterViewInit {
           },
           error: () => {
             this.toastr.error('Não foi possível carregar o arquivo desejado!', 'Erro')
-          }
+          },
+          complete: () => this.showProgressBar = false
         })
     }
   }
@@ -123,7 +131,6 @@ export class EmailListComponent implements OnInit, AfterViewInit {
     let ids: number[] = [];
 
     if (this.dataSource.filteredData.length !== this.dataSource.data.length) {
-      console.log('Heeeeeere')
       ids = this.dataSource.filteredData.flatMap<number>(email => email.id);
     }
     this.service.downloadFile(ids)

@@ -27,36 +27,36 @@
 
   <div class="mat-elevation-z8 ">
 
-    <table class="mat-elevation-z4" mat-table [dataSource]="dataSource">
+    <table class="mat-elevation-z4" mat-table [dataSource]="dataSource"  matSort >
       <caption>E-mails carregados através da planilha</caption>
 
       <ng-container matColumnDef="id">
-        <th *matHeaderCellDef mat-header-cell> ID</th>
+        <th *matHeaderCellDef mat-header-cell mat-sort-header > ID</th>
         <td *matCellDef="let element" mat-cell> {{ element.id }}</td>
       </ng-container>
 
       <ng-container matColumnDef="sendTo">
-        <th *matHeaderCellDef mat-header-cell> Destinatário</th>
+        <th *matHeaderCellDef mat-header-cell mat-sort-header > Destinatário</th>
         <td *matCellDef="let element" mat-cell> {{ element.sendTo }}</td>
       </ng-container>
 
       <ng-container matColumnDef="status">
-        <th *matHeaderCellDef mat-header-cell> Status</th>
+        <th *matHeaderCellDef mat-header-cell mat-sort-header > Status</th>
         <td *matCellDef="let element" mat-cell> {{ element.status }}</td>
       </ng-container>
 
       <ng-container matColumnDef="subject">
-        <th *matHeaderCellDef mat-header-cell> Assunto</th>
+        <th *matHeaderCellDef mat-header-cell mat-sort-header > Assunto</th>
         <td *matCellDef="let element" mat-cell> {{ element.subject }}</td>
       </ng-container>
 
       <ng-container matColumnDef="sendDate">
-        <th *matHeaderCellDef mat-header-cell> Data de envio</th>
+        <th *matHeaderCellDef mat-header-cell mat-sort-header > Data de envio</th>
         <td *matCellDef="let element" mat-cell> {{ element.sendDate }}</td>
       </ng-container>
 
       <ng-container matColumnDef="conteudo">
-        <th *matHeaderCellDef mat-header-cell> Conteúdo</th>
+        <th *matHeaderCellDef mat-header-cell > Conteúdo</th>
         <td *matCellDef="let element" mat-cell>
           <button mat-icon-button color="accent" aria-label="Abrir e-mail"
                   (click)="showEmailModal.toggle(); setEmail(element)">
@@ -93,7 +93,7 @@
 </modal>
 
 <modal #uploadFile>
-  <h1>Enviar planilha de e-mails</h1>
+  <h2>Enviar planilha de e-mails</h2>
   <form>
     <mat-form-field class="full-width">
       <mat-label>Assunto</mat-label>
@@ -132,4 +132,5 @@
     </button>
     {{ fileName || "Nenhum arquivo escolhido" }}
   </div>
+  <mat-progress-bar *ngIf="showProgressBar" mode="indeterminate"></mat-progress-bar>
 </modal>
