@@ -14,14 +14,14 @@
       class="mat-elevation-z8 dwnBtn"
       color="primary"
       mat-stroked-button
-      (click)="downloadFile.toggle()">
+      (click)="onDownloadFile()">
       Baixar planilha de e-mails
     </button>
   </div>
 
-  <mat-form-field class="filter">
+  <mat-form-field class="full-width">
     <mat-label>Filtrar</mat-label>
-    <input #input (keyup)="applyFilter($event)" matInput
+    <input (keyup)="applyFilter($event)" matInput
            placeholder="Ex.: Fulano de tal, Enviado, Notas de Matemática, 04/12/2023">
   </mat-form-field>
 
@@ -93,14 +93,36 @@
 </modal>
 
 <modal #uploadFile>
-
+  <h1>Enviar planilha de e-mails</h1>
+  <form>
+    <mat-form-field class="full-width">
+      <mat-label>Assunto</mat-label>
+      <input
+        [formControl]="subject"
+        name="subject"
+        required
+        matInput
+        placeholder="Ex.: Notas de matemática">
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <mat-label>Mensagem para os alunos</mat-label>
+      <textarea
+        [formControl]="message"
+        class="message"
+        name="message"
+        required
+        matInput
+        placeholder="Ex.: Bom dia, segue as notas de matemática">
+      </textarea>
+    </mat-form-field>
+  </form>
   <input
+    required
     type="file"
     class="file-input"
     (change)="onFileSelected($event)"
     #fileUpload
     [hidden]="true">
-
   <div class="file-upload">
     <button
       mat-mini-fab
@@ -110,9 +132,4 @@
     </button>
     {{ fileName || "Nenhum arquivo escolhido" }}
   </div>
-
-</modal>
-
-<modal #downloadFile>
-  <p>Download Modal</p>
 </modal>

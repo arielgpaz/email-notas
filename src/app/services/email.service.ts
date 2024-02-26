@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {EmailEnviado} from "../models/email-enviado";
 import {API_CONFIG} from "../config/api.config";
@@ -34,4 +34,13 @@ export class EmailService {
     return this.http.post<EmailStatusCounter>(`${API_CONFIG.baseUrl}/email/file/upload`, formData, options);
   }
 
+  downloadFile(ids: number[]): Observable<any> {
+    let options = {
+      responseType: 'blob' as 'blob',
+      params: ids.length > 0 ?
+        new HttpParams({ fromObject: { ids: ids.join(',').toString() } })
+        : undefined,
+    };
+    return this.http.get(`${API_CONFIG.baseUrl}/email/file/download`, options)
+  }
 }

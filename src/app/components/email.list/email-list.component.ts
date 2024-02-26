@@ -14,6 +14,8 @@ import {MatProgressBar} from "@angular/material/progress-bar";
 import {NgIf} from "@angular/common";
 import {MatDivider} from "@angular/material/divider";
 import {ToastrService} from "ngx-toastr";
+import {FormControl, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {saveAs} from 'file-saver';
 
 @Component({
   selector: 'app-email.list',
@@ -38,7 +40,9 @@ import {ToastrService} from "ngx-toastr";
     MatMiniFabButton,
     MatProgressBar,
     NgIf,
-    MatDivider
+    MatDivider,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   styleUrl: './email-list.component.css'
 })
@@ -51,11 +55,12 @@ export class EmailListComponent implements OnInit, AfterViewInit {
   ELEMENT_DATA: EmailEnviado[] = []
 
   displayedColumns: string[] = ['id', 'sendTo', 'status', 'subject', 'sendDate', 'conteudo'];
-  dataSource = new MatTableDataSource<EmailEnviado>(this.ELEMENT_DATA);
+  dataSource = new MatTableDataSource<EmailEnviado>();
   email: EmailEnviado | undefined;
   fileName = '';
-  emailSubject = 'Subject';
-  additionalMessage = 'Message';
+
+  subject: FormControl = new FormControl(null, [Validators.required]);
+  message: FormControl = new FormControl(null, [Validators.required]);
 
   constructor(
     private service: EmailService,
@@ -96,7 +101,7 @@ export class EmailListComponent implements OnInit, AfterViewInit {
 
       this.fileName = file.name;
 
-      this.service.uploadEmailsFile(file, this.emailSubject, this.additionalMessage)
+      this.service.uploadEmailsFile(file, this.subject.value, this.message.value)
         .subscribe({
           next: statusCounter => {
             if (statusCounter.error === 0) {
@@ -114,4 +119,19 @@ export class EmailListComponent implements OnInit, AfterViewInit {
     }
   }
 
+  onDownloadFile() {
+    let ids: number[] = [];
+
+    if (this.dataSource.filteredData.length !== this.dataSource.data.length) {
+      console.log('Heeeeeere')
+      ids = this.dataSource.filteredData.flatMap<number>(email => email.id);
+    }
+    this.service.downloadFile(ids)
+      .subscribe({
+        next: res => {
+          const blob: Blob = new Blob([res], {type: 'application/octet-stream'});
+          saveAs(blob, 'relatorio.csv');
+        }
+      });
+  }
 }
