@@ -11,13 +11,13 @@ import {MatIcon} from "@angular/material/icon";
 import {ModalComponent} from "../../modal/modal.component";
 import {MatCard, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle} from "@angular/material/card";
 import {MatProgressBar} from "@angular/material/progress-bar";
-import {NgIf} from "@angular/common";
+import {NgClass, NgIf} from "@angular/common";
 import {MatDivider} from "@angular/material/divider";
 import {ToastrService} from "ngx-toastr";
 import {FormControl, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {saveAs} from 'file-saver';
 import {MatSort, MatSortModule} from "@angular/material/sort";
-import {LiveAnnouncer} from "@angular/cdk/a11y";
+import {MatTooltip} from "@angular/material/tooltip";
 
 @Component({
   selector: 'app-email.list',
@@ -47,13 +47,14 @@ import {LiveAnnouncer} from "@angular/cdk/a11y";
     MatDivider,
     FormsModule,
     ReactiveFormsModule,
+    NgClass,
+    MatTooltip,
   ]
 })
 export class EmailListComponent implements OnInit, AfterViewInit {
 
-  ELEMENT_DATA: EmailEnviado[] = []
-
   displayedColumns: string[] = ['id', 'sendTo', 'status', 'subject', 'sendDate', 'conteudo'];
+  showLineBreak: boolean = true;
 
   dataSource = new MatTableDataSource<EmailEnviado>();
   email: EmailEnviado | undefined;
@@ -75,7 +76,6 @@ export class EmailListComponent implements OnInit, AfterViewInit {
 
   getEmails(): void {
     this.service.getEmails().subscribe(res => {
-      this.ELEMENT_DATA = res;
       this.dataSource = new MatTableDataSource<EmailEnviado, MatPaginator>(res);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
