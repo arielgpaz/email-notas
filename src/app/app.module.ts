@@ -6,18 +6,20 @@ import {AppRoutes} from "./app.routes";
 import {HttpClientModule} from "@angular/common/http";
 import {ModalComponent} from "./modal/modal.component";
 import {ToastrModule} from "ngx-toastr";
+import {FooterComponent} from "./components/footer/footer.component";
 
 @NgModule({
-  imports: [
-    AppRoutes,
-    BrowserModule,
-    HttpClientModule,
-    ToastrModule.forRoot({
-      timeOut: 4000,
-      closeButton: true,
-      progressBar: true
-    }),
-  ],
+    imports: [
+        AppRoutes,
+        BrowserModule,
+        HttpClientModule,
+        ToastrModule.forRoot({
+            timeOut: 4000,
+            closeButton: true,
+            progressBar: true
+        }),
+        FooterComponent,
+    ],
   declarations: [
     AppComponent
   ],
