@@ -2,12 +2,13 @@
 
   <mat-card class="content mat-elevation-z8">
     <mat-card-content>
-      <img class="img-center" src="/assets/img/email.svg" alt="E-mail Notas 10">
+      <img alt="E-mail Notas 10" class="img-center" src="/assets/img/email.svg">
     </mat-card-content>
     <mat-card-footer class="btn btn-group">
       <button
-        mat-stroked-button
+        (click)="downloadTemplate.toggle()"
         color="accent"
+        mat-stroked-button
         matTooltip="Modelo de planilha aceito pelo serviço">
         Baixar modelo da planilha
       </button>
@@ -22,3 +23,26 @@
   </mat-card>
 
 </div>
+
+<modal #downloadTemplate>
+  <div class="download-template">
+    <h2>Enviar planilha de e-mails</h2>
+    <p class="explain">
+      Você pode baixar essa planilha para usar como exemplo de como deve ser montada a planilha com as notas.
+      Elas precisam estar em um arquivo com extensão .csv (Comma separeted values), dessa forma conseguiremos
+      identificar
+      cada aluno e suas respectivas notas.
+      <br>
+      Fique a vontade para colocar quantos alunos forem necessário, assim como a quantidade de notas que você desejar.
+    </p>
+    <a
+      class="mat-elevation-z8 download-template-btn"
+      color="primary"
+      download="example.csv"
+      href="/assets/example/Notas.csv"
+      mat-raised-button
+      matTooltip="Baixar planilha modelo.">
+      Baixar
+    </a>
+  </div>
+</modal>
