@@ -1,13 +1,13 @@
 <div class="container">
   <div class="content">
 
-    <div class="pageTitle full-width mat-elevation-z8">
+    <div class="page-title full-width mat-elevation-z8">
       <button
-        class="homeBtn"
-        mat-icon-button color="accent"
         aria-label="Voltar"
-        routerLink="../"
-        matTooltip="Voltar para página inicial">
+        class="home-btn" color="accent"
+        mat-icon-button
+        matTooltip="Voltar para página inicial"
+        routerLink="../">
         <mat-icon>home</mat-icon>
       </button>
       <h1 class="title">
@@ -17,16 +17,17 @@
 
     <div class="file-buttons">
       <button
-        class="mat-elevation-z8 upBtn"
-        mat-stroked-button
         (click)="uploadFile.toggle()"
+        class="mat-elevation-z8 up-btn"
+        mat-stroked-button
         matTooltip="Carregar planilha com e-mails a serem enviados">
         Carregar planilha de e-mails
       </button>
       <button
-        class="mat-elevation-z8 dwnBtn"
-        mat-stroked-button
         (click)="onDownloadFile()"
+        [disabled]="dataSource.data.length <= 0 || dataSource.filteredData.length <= 0"
+        class="mat-elevation-z8 dwn-btn"
+        mat-stroked-button
         matTooltip="Baixar relatório com os e-mails, apenas filtrados">
         Baixar relatório de e-mails
       </button>
@@ -107,45 +108,58 @@
   </mat-card>
 </modal>
 
-<modal #uploadFile>
-  <h2>Enviar planilha de e-mails</h2>
-  <form>
-    <mat-form-field class="full-width">
-      <mat-label>Assunto</mat-label>
-      <input
-        [formControl]="subject"
-        name="subject"
-        required
-        matInput
-        placeholder="Ex.: Notas de matemática">
-    </mat-form-field>
-    <mat-form-field class="full-width">
-      <mat-label>Mensagem para os alunos</mat-label>
-      <textarea
-        [formControl]="message"
-        class="message"
-        name="message"
-        required
-        matInput
-        placeholder="Ex.: Bom dia, segue as notas de matemática">
+<modal #uploadFile class="upload-emails">
+  <div class="send-emails">
+    <h2>Enviar planilha de e-mails</h2>
+    <form>
+      <mat-form-field class="full-width">
+        <mat-label>Assunto</mat-label>
+        <input
+          [formControl]="subject"
+          name="subject"
+          required
+          matInput
+          placeholder="Ex.: Notas de matemática">
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label>Mensagem para os alunos</mat-label>
+        <textarea
+          [formControl]="message"
+          class="message"
+          name="message"
+          required
+          matInput
+          placeholder="Ex.: Bom dia, segue as notas de matemática">
       </textarea>
-    </mat-form-field>
-  </form>
-  <input
-    required
-    type="file"
-    class="file-input"
-    (change)="onFileSelected($event)"
-    #fileUpload
-    [hidden]="true">
-  <div class="file-upload">
-    <button
-      mat-mini-fab
-      color="primary"
-      (click)="fileUpload.click()">
-      <mat-icon>attach_file</mat-icon>
-    </button>
-    {{ fileName || "Nenhum arquivo escolhido" }}
+      </mat-form-field>
+    </form>
+    <input
+      #fileUpload
+      (change)="onFileSelected($event)"
+      [hidden]="true"
+      class="file-input"
+      required
+      type="file">
+    <div class="file-upload">
+      <button
+        (click)="fileUpload.click()"
+        color="primary"
+        mat-mini-fab>
+        <mat-icon>attach_file</mat-icon>
+      </button>
+      <p class="file-name">
+        {{ fileName || "Nenhum arquivo escolhido" }}
+      </p>
+      <button
+        (click)="sendEmails()"
+        [disabled]="!file"
+        class="mat-elevation-z8 inside-up-btn"
+        color="primary"
+        mat-raised-button
+        matTooltip="Carregar planilha com e-mails a serem enviados">
+        Carregar
+      </button>
+    </div>
+    <mat-progress-bar *ngIf="showProgressBar" mode="indeterminate"></mat-progress-bar>
   </div>
-  <mat-progress-bar *ngIf="showProgressBar" mode="indeterminate"></mat-progress-bar>
 </modal>

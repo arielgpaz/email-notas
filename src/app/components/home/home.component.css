@@ -37,3 +37,13 @@
 button {
   width: 30%
 }
+
+.download-template {
+  margin: 1rem;
+  color: white;
+}
+
+.explain {
+  text-align: justify;
+  margin-bottom: 1rem;
+}

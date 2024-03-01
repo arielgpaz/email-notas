@@ -2,7 +2,7 @@ import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource, MatTableModule} from "@angular/material/table";
 import {EmailEnviado} from "../../models/email-enviado";
 import {MatPaginator, MatPaginatorModule} from "@angular/material/paginator";
-import {MatButton, MatIconButton, MatMiniFabButton} from "@angular/material/button";
+import {MatButton, MatFabButton, MatIconButton, MatMiniFabButton} from "@angular/material/button";
 import {RouterLink} from "@angular/router";
 import {EmailService} from "../../services/email.service";
 import {MatFormField, MatLabel} from "@angular/material/form-field";
@@ -20,10 +20,6 @@ import {MatSort, MatSortModule} from "@angular/material/sort";
 import {MatTooltip} from "@angular/material/tooltip";
 
 @Component({
-  selector: 'app-email.list',
-  templateUrl: './email-list.component.html',
-  styleUrl: './email-list.component.css',
-  standalone: true,
   imports: [
     MatTableModule,
     MatPaginatorModule,
@@ -49,7 +45,12 @@ import {MatTooltip} from "@angular/material/tooltip";
     ReactiveFormsModule,
     NgClass,
     MatTooltip,
-  ]
+    MatFabButton,
+  ],
+  selector: 'app-email.list',
+  standalone: true,
+  styleUrl: './email-list.component.css',
+  templateUrl: './email-list.component.html'
 })
 export class EmailListComponent implements OnInit, AfterViewInit {
 
@@ -60,6 +61,7 @@ export class EmailListComponent implements OnInit, AfterViewInit {
   email: EmailEnviado | undefined;
   fileName = '';
   showProgressBar: boolean = false;
+  file: File | undefined;
 
   subject: FormControl = new FormControl(null, [Validators.required]);
   message: FormControl = new FormControl(null, [Validators.required]);
@@ -103,12 +105,16 @@ export class EmailListComponent implements OnInit, AfterViewInit {
   }
 
   onFileSelected(event: any) {
-    const file: File = event.target.files[0];
-    this.showProgressBar = true;
+    this.file = event.target.files[0];
+    if (this.file) {
+      this.fileName = this.file.name;
+    }
+  }
 
-    if (file) {
-      this.fileName = file.name;
-      this.service.uploadEmailsFile(file, this.subject.value, this.message.value)
+  sendEmails() {
+    if (this.file) {
+      this.showProgressBar = true;
+      this.service.uploadEmailsFile(this.file, this.subject.value, this.message.value)
         .subscribe({
           next: statusCounter => {
             if (statusCounter.error === 0) {
